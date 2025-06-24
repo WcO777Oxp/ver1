@@ -63,12 +63,18 @@ def extract_toc_from_pdf(pdf_path):
 
 def save_guidelines_per_manual(titles_by_pdf):
     for pdf_name, titles in titles_by_pdf.items():
-        if "RETAIL" in pdf_name.upper():
-            file_name = "retail_guideline.txt"
-        elif "POSWEB" in pdf_name.upper():
-            file_name = "posweb_guideline.txt"
-        else:
-            continue  # Skip unknown manual types
+        base_name = pdf_name.lower().replace(" ", "_")  # Normalize filename
+        file_name = f"{base_name}_guideline.txt"  # Example: retail_manual_guideline.txt
+
+        output_path = os.path.join("res", file_name)
+        os.makedirs(os.path.dirname(output_path), exist_ok=True)
+        titles = list(dict.fromkeys(titles))  # Deduplicate
+
+        with open(output_path, "w", encoding="utf-8") as f:
+            for title in titles:
+                f.write(f"• {title.strip()}\n")
+        print(f"✅ Saved guideline: {output_path}")
+
 
         output_path = os.path.join("res", file_name)
         os.makedirs(os.path.dirname(output_path), exist_ok=True)
