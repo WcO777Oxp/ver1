@@ -53,13 +53,24 @@ class ChatBotWindow(QWidget):
         self.load_guidelines()
 
     def load_guidelines(self):
-        guideline_file = "retail_guideline.txt" if self.selected_pdf_folder == "RETAIL-MANUAL" else "posweb_guideline.txt"
+        if not self.selected_pdf_folder:
+            print("❗ No PDF folder selected.")
+            return
+
+        # Normalize name to match the guideline filename generated earlier
+        normalized_name = self.selected_pdf_folder.lower().replace(" ", "_")
+        guideline_file = f"{normalized_name}_guideline.txt"
         guideline_path = os.path.join("res", guideline_file)
+
         if os.path.exists(guideline_path):
             with open(guideline_path, "r", encoding="utf-8") as f:
                 content = f.read().strip()
                 if hasattr(self.ui, 'guidelineLabel'):
                     self.ui.guidelineLabel.setText(content)
+                else:
+                    print(" guidelineLabel not found in UI.")
+        else:
+            print(f" Guideline file not found: {guideline_path}")
 
     def load_pdf_files(self):
         self.ui.pdfList.clear()
